@@ -1,0 +1,8 @@
+*bak
+venv
+*pyc
+*~
+__pycache__/
+.idea/
+*.lock
+/src/
