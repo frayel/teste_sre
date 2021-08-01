@@ -1,4 +1,7 @@
+import json
 from uuid import UUID
+
+from django.core.serializers.json import DjangoJSONEncoder
 
 from api.converter.base_converter import BaseConverter
 from api.dto.payment_dto import PaymentDto
@@ -36,6 +39,6 @@ class PaymentConverter(BaseConverter):
         ) if model else None
         return dto
 
-    def from_model_to_dto_list(self, model_list: list) -> list:
-        return [self.from_model_to_dto(model) for model in model_list]
-
+    def dto_to_json(self, dto: PaymentDto) -> str:
+        """ Transforma o DTO em json """
+        return json.dumps(dto.__dict__, ensure_ascii=False, cls=DjangoJSONEncoder)

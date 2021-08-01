@@ -18,7 +18,7 @@ class ProcessPaymentService:
                 p.processing = True
                 self.payment_repository.save(p)
                 self.remote_payment_service.send(p)
-                self.payment_repository.remove(p.appointment_id)
+                self.payment_repository.finish(p.appointment_id)
                 logging.info(f"Processamento do pagamento da consulta {p.appointment_id} concluído!")
             except Exception:
                 logging.exception(f"Ocorreu um erro ao processar o pagamento {p.appointment_id}")

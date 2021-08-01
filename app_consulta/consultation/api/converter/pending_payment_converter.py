@@ -1,10 +1,9 @@
-from api.converter.base_converter import BaseConverter
 from api.dto.pending_payment_dto import PendingPaymentDto
 from api.models.pending_payment_model import PendingPaymentModel
 
 
-class PendingPaymentConverter(BaseConverter):
-    """ Converte dados do PendingPayment entre Model e DTO
+class PendingPaymentConverter:
+    """ Converte dados do PendingPayment
     """
 
     def from_model_to_dto(self, model: PendingPaymentModel) -> PendingPaymentDto:
@@ -15,9 +14,8 @@ class PendingPaymentConverter(BaseConverter):
             total_price=model.total_price,
             tries=model.tries,
             processing=model.processing,
+            finished=model.finished,
         ) if model else None
         return dto
 
-    def from_model_to_dto_list(self, model_list: list) -> list:
-        return [self.from_model_to_dto(model) for model in model_list]
 

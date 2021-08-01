@@ -6,33 +6,42 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.converter.consultation_converter import ConsultationConverter
 from api.exceptions.invalid_data import InvalidDataException
 from api.exceptions.invalid_operation import InvalidOperationException
 from api.service.finish_consultation_service import FinishConsultationService
-from api.converter.finish_consultation_converter import FinishConsultationConverter
 
 
 class FinishConsutationView(APIView):
     """ View para término de uma consulta
         url: /app/consultation/finish/ """
 
+    # Definição para autenticação
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
+
+    # Classe de serviço para término da consulta
     finish = FinishConsultationService()
-    converter = FinishConsultationConverter()
+
+    # Conversor da entrada em dto
+    converter = ConsultationConverter()
 
     def post(self, request):
         logging.info(f"API consultation.finish acessada por {request.user.username}")
         try:
-            dto = self.converter.from_text(request.body)
-            consultation_dto = self.finish.end(dto)
+            # Converte o texto de entrada em dto
+            input_dto = self.converter.finish_data_from_text(request.body)
+            # Chama o serviço para iniciar a consulta
+            consultation_dto = self.finish.end(input_dto)
 
         except InvalidDataException as e:
+            # Responde com o status 400 no caso de haver dados inválidos na entrada
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
         except InvalidOperationException as e:
+            # Responde com status 400 no caso de ocorrer um erro no serviço
             logging.exception("Ocorreu uma operação inválida ao encerrar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(f"Consulta {consultation_dto.id} Encerrada às {consultation_dto.end_date}", status=status.HTTP_202_ACCEPTED)
+        return Response(self.converter.dto_to_json(consultation_dto), status=status.HTTP_202_ACCEPTED)
 

@@ -22,36 +22,48 @@ O sistema está distribuido em 3 containers: API Consulta, API Financeira e DB P
 	app/finance/record - Realiza o registro de uma entrada financeira  
 
 ## Para criar os containers docker:
-	cd app_consulta
-	docker build -t app_consulta app_consulta  
-	cd app_financeiro
-	docker build -t app_financeiro app_financeiro  
+	docker build -t app_consulta app_consulta
+	docker build -t app_financas app_financas
+	ou executar docker_build.bat  
 
 ## Para subir os containers:
 	docker network create --subnet=172.18.0.0/16 rede_teste  
 	docker run --net rede_teste --ip 172.18.0.2 --name postgres -e "POSTGRES_PASSWORD=pg123" -p 5432:5432 -d postgres  
 	docker run --net rede_teste --ip 172.18.0.3 -it -p 8010:8010 --name app_consulta -d app_consulta  
-	docker run --net rede_teste --ip 172.18.0.4 -it -p 8020:8020 --name app_financeiro -d app_financeiro  
+	docker run --net rede_teste --ip 172.18.0.4 -it -p 8020:8020 --name app_financas -d app_financas 
+	ou executar docker_run.bat  
 
-## Registrando o início da consulta:
-	POST http://172.18.0.4/app/consultation/start/
-	HEADER 
-		content-type: application/json
-		authorization: Basic YWRtaW46dGVzdGUxMjM=
-	BODY
-		{
-			"physician_id": "ea959b03-5577-45c9-b9f7-a45d3e77ce82",
-			"patient_id": "86158d46-ce33-4e3d-a822-462bbff5782f"
-		}
+## Para rodar o ambiente de dev
+	python manage.py migrate
+	python manage.py createsuperuser (com login/senha: admin/teste123)
+	api consulta: python manage.py runserver 8000
+	api financeira: python manage.py runserver 8001
+
+## Realizando chamadas
+
+	Executar o script teste_api.py para iniciar e encerrar uma consulta
+	Ou realizar as chamadas:
+		
+	* Registrando o início da consulta:
+		POST http://172.18.0.4/app/consultation/start/
+		HEADER 
+			content-type: application/json
+			authorization: Basic YWRtaW46dGVzdGUxMjM=
+		BODY
+			{
+				"physician_id": "ea959b03-5577-45c9-b9f7-a45d3e77ce82",
+				"patient_id": "86158d46-ce33-4e3d-a822-462bbff5782f"
+			}
 	
-## Registrando o término da consulta:
-	POST http://172.18.0.4/app/consultation/finish/
-	HEADER 
-		content-type: application/json
-		authorization: Basic YWRtaW46dGVzdGUxMjM=
-	BODY
-		{
-			"consultation_id": "25b1b0e4-23cd-4764-ad3d-ac7fcbb76f5a"
-		}
+	* Registrando o término da consulta:
+		POST http://172.18.0.4/app/consultation/finish/
+		HEADER 
+			content-type: application/json
+			authorization: Basic YWRtaW46dGVzdGUxMjM=
+		BODY
+			{
+				"consultation_id": "25b1b0e4-23cd-4764-ad3d-ac7fcbb76f5a"
+			}
+		
+		* O registro na API financeira é feito automaticamente pelo sistema
 	
-	* O registro na API financeira é feito automaticamente pelo sistema

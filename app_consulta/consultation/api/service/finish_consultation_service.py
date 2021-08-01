@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from api.dto.consultation_dto import ConsultationDto
-from api.dto.finish_consultation_dto import FinishConsultationDto
+from api.dto.finish_consultation_parameter_dto import FinishConsultationParameterDto
 from api.dto.pending_payment_dto import PendingPaymentDto
 from api.exceptions.invalid_operation import InvalidOperationException
 from api.repository.consultation_repository import ConsultationRepository
@@ -19,21 +19,22 @@ class FinishConsultationService:
     payment_repository = PaymentRepository()
     price_calculator = PriceCalculator()
 
-    def end(self, finish_dto: FinishConsultationDto) -> ConsultationDto:
+    def end(self, finish_dto: FinishConsultationParameterDto) -> ConsultationDto:
 
         try:
+            # Localiza a consulta atraves do parametro recebido
             consultation_dto = self.consultation_repository.get_by_consultation_id(finish_dto.consultation_id)
 
             if consultation_dto:
                 if not consultation_dto.end_date:
+                    # Se a consulta ainda nao foi encerrada, calcula o preco e define o horário de término
                     consultation_dto.end_date = timezone.now()
                     consultation_dto.price = self.price_calculator.calculate(consultation_dto.start_date, consultation_dto.end_date)
 
                     # Registra a cobrança para ser enviada à API financeira
                     pending_payment = PendingPaymentDto(appointment_id=finish_dto.consultation_id,
                                                         total_price=consultation_dto.price,
-                                                        tries=0,
-                                                        processing=False)
+                                                        tries=0, processing=False, finished=False)
                     self.payment_repository.save(pending_payment)
 
                     # Grava a Consulta como Encerrada

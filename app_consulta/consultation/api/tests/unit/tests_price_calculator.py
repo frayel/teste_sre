@@ -18,7 +18,7 @@ class PriceCalculatorTest(TestCase):
         start_date = datetime.strptime("01/01/2021 10:00", "%d/%m/%Y %H:%M")
         end_date = datetime.strptime("01/01/2021 10:30", "%d/%m/%Y %H:%M")
         price = calculator.calculate(start_date=start_date, end_date=end_date)
-        self.assertEqual(price, 100.00)
+        self.assertEqual(price, 200.00)
 
     def test_price_65m(self):
         calculator = PriceCalculator()

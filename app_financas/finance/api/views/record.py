@@ -16,24 +16,32 @@ class RecordView(APIView):
     """ View para registro financeiro de uma consulta
         url: /app/finance/record/ """
 
+    # Definição para autenticação
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
+
+    # Classe de serviço para registro financeiro
     service = PaymentService()
+
+    # Conversor da entrada em dto
     converter = PaymentConverter()
 
     def post(self, request):
         logging.info(f"API finance.record acessada por {request.user.username}")
 
         try:
-            dto = self.converter.from_text(request.body)
-            payment_dto = self.service.record(dto)
+            # Converte o texto de entrada em dto
+            input_dto = self.converter.from_text(request.body)
+            # Chama o serviço para registrar o recebimento
+            payment_dto = self.service.record(input_dto)
 
         except InvalidDataException as e:
+            # Responde com o status 400 no caso de existir dados inválidos no parametro
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
         except InvalidOperationException as e:
+            # Responde com status 400 no caso de ocorrer um erro no serviço
             logging.exception("Ocorreu uma operação inválida ao registrar o pagamento.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(f"Pagamento da consulta {payment_dto.appointment_id} Registrado!", status=status.HTTP_201_CREATED)
-
+        return Response(self.converter.dto_to_json(payment_dto), status=status.HTTP_201_CREATED)
