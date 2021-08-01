@@ -3,22 +3,22 @@ import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from django.conf import settings
 
-from api.config.consultation_config import ConsultationConfig
 from api.service.process_payment_service import ProcessPaymentService
 
 scheduler = BackgroundScheduler(settings.SCHEDULER_CONFIG)
 
 
 class SchedulerService:
+    """ Agendador de tarefa pra processar os pagamentos pendentes de envio à api financeira """
 
     payment_service = ProcessPaymentService()
 
-    def start(self):
+    def start(self) -> BackgroundScheduler:
         scheduler.add_job(
             self.payment_service.process,
             'interval',
             id="scheduler.process_payment",
-            seconds=ConsultationConfig.scheduler_interval_seconds,
+            seconds=settings.SCHEDULER_INTERVAL_SECONDS,
             replace_existing=True)
         logging.basicConfig()
         logging.getLogger('apscheduler').setLevel(logging.ERROR)

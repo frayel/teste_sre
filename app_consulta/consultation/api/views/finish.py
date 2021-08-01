@@ -9,8 +9,7 @@ from rest_framework.views import APIView
 from api.exceptions.invalid_data import InvalidDataException
 from api.exceptions.invalid_operation import InvalidOperationException
 from api.service.finish_consultation_service import FinishConsultationService
-from api.service.handler_consultation import HandlerConsultation
-from api.service.start_consultation_service import StartConsultationService
+from api.converter.finish_consultation_converter import FinishConsultationConverter
 
 
 class FinishConsutationView(APIView):
@@ -20,14 +19,13 @@ class FinishConsutationView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     finish = FinishConsultationService()
-    handler = HandlerConsultation()
+    converter = FinishConsultationConverter()
 
     def post(self, request):
-        logging.info(f"API IniciarConsulta acessada por {request.user.username}")
-
+        logging.info(f"API consultation.finish acessada por {request.user.username}")
         try:
-            dto = self.handler.finish_consultation_from_text(request.body)
-            consultation = self.finish.end(dto)
+            dto = self.converter.from_text(request.body)
+            consultation_dto = self.finish.end(dto)
 
         except InvalidDataException as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
@@ -36,4 +34,5 @@ class FinishConsutationView(APIView):
             logging.exception("Ocorreu uma operação inválida ao encerrar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(f"Consulta {consultation.id} Encerrada às {consultation.end_date}", status=status.HTTP_202_ACCEPTED)
+        return Response(f"Consulta {consultation_dto.id} Encerrada às {consultation_dto.end_date}", status=status.HTTP_202_ACCEPTED)
+

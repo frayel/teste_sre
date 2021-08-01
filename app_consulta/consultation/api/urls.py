@@ -7,3 +7,4 @@ urlpatterns = [
     path("consultation/start/", StartConsutationView.as_view(), name="start_consultation"),
     path("consultation/finish/", FinishConsutationView.as_view(), name="finish_consultation"),
 ]
+

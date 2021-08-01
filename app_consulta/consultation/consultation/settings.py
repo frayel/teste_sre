@@ -135,29 +135,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGLEVEL = "INFO"
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': LOGLEVEL,
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
-    'formatters': {
-        'simple': {
-            'format': '%(levelname)-8s %(message)s'
-        },
-    },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': LOGLEVEL,
-            'propagate': True,
-        },
-    }
-}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -176,3 +153,9 @@ SCHEDULER_CONFIG = {
     'apscheduler.job_defaults.max_instances': '1',
     'apscheduler.job_defaults.coalesce': 'true',
 }
+
+API_USERNAME = "admin"
+API_PASSWORD = "teste123"
+FINANCE_PAYMENT_ENDPOINT = "http://127.0.0.1:8000/app/finance/record/"
+SCHEDULER_INTERVAL_SECONDS = 5
+

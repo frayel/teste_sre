@@ -2,7 +2,7 @@ import json
 from collections import defaultdict
 
 
-class BaseHandler:
+class BaseConverter:
 
     def _text_to_dict(self, text: str) -> dict:
         """ Transforma um texto json em um dict python """

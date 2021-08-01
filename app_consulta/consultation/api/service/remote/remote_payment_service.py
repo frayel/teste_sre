@@ -1,19 +1,25 @@
 import logging
+from base64 import b64encode
 
-from api.dto.start_consultation_dto import StartConsultationDto
-from api.exceptions.invalid_operation import InvalidOperationException
-from api.models.consultation_model import ConsultationModel
-from api.repository.consultation_repository import ConsultationRepository
+import requests
+from django.conf import settings
+
+from api.dto.pending_payment_dto import PendingPaymentDto
 from api.repository.payment_repository import PaymentRepository
 
 
 class RemotePaymentService:
+    """ Serviço de comunicação com a api financeira """
 
     payment_repository = PaymentRepository()
 
-    def send(self, dto, PaymentDto) -> None:
-        for p in self.payment_repository.get_process_pending():
-            logging.info(f'Processando pagamento {p.appointment_id}')
-            self.payment_repository.save_retry(appointment_id)
-            self.payment_repository.remove(appointment_id)
-
+    def send(self, payment: PendingPaymentDto) -> None:
+        logging.info(f'Realizando chamda remota para {settings.FINANCE_PAYMENT_ENDPOINT}')
+        user_pass = b64encode(f"{settings.API_USERNAME}:{settings.API_PASSWORD}".encode()).decode("ascii")
+        headers = {'Authorization': f"Basic {user_pass}"}
+        data = {
+            "appointment_id": payment.appointment_id,
+            "total_price": payment.total_price,
+        }
+        response = requests.post(settings.FINANCE_PAYMENT_ENDPOINT, data=data, headers=headers, timeout=10)
+        response.raise_for_status()

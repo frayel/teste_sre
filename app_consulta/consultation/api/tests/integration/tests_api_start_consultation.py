@@ -60,3 +60,4 @@ class ApiStartConsultationTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response = self.client.post(url, json.dumps(data), content_type="text/plain")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+

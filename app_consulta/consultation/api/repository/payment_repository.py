@@ -1,25 +1,28 @@
-from api.models.payment_model import PaymentModel
+from uuid import UUID
+
+from api.dto.pending_payment_dto import PendingPaymentDto
+from api.models.pending_payment_model import PendingPaymentModel
+from api.converter.pending_payment_converter import PendingPaymentConverter
 
 
 class PaymentRepository:
-    """ Acesso ao model do objeto Payment """
+    """ Camada de persistência ao dados da Pendência de Pagamento """
 
-    objects = PaymentModel.objects
+    objects = PendingPaymentModel.objects
+    converter = PendingPaymentConverter()
 
-    def get_by_appointment_id(self, pk: str) -> PaymentModel:
-        return self.objects.get(appointment_id=pk)
+    def get_by_appointment_id(self, pk: UUID) -> PendingPaymentDto:
+        return self.converter.from_model_to_dto(self.objects.get(appointment_id=pk))
 
     def get_process_pending(self) -> list:
-        return self.objects.filter(processing=False).all()
+        return self.converter.from_model_to_dto_list(self.objects.filter(processing=False).all())
 
-    def save(self, appointment_id: str, total_price: float) -> None:
-        payment = PaymentModel(appointment_id=appointment_id, total_price=total_price)
-        payment.save()
+    def save(self, dto: PendingPaymentDto) -> PendingPaymentDto:
+        db_model = self.objects.filter(appointment_id=dto.appointment_id).first()
+        model = self.converter.from_dto_to_model(dto, db_model)
+        model.save()
+        return self.converter.from_model_to_dto(model)
 
-    def save_retry(self, appointment_id: str) -> None:
-        payment = self.objects.get(appointment_id=appointment_id)
-        payment.tries = payment.tries + 1
-        payment.save(update_fields=['tries'])
+    def remove(self, appointment_id: UUID) -> None:
+        self.objects.get(appointment_id=appointment_id).delete()
 
-    def remove(self, appointment_id: str) -> None:
-        self.objects.get(appointment_id=appointment_id).remove()

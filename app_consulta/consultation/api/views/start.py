@@ -8,8 +8,8 @@ from rest_framework.views import APIView
 
 from api.exceptions.invalid_data import InvalidDataException
 from api.exceptions.invalid_operation import InvalidOperationException
-from api.service.handler_consultation import HandlerConsultation
 from api.service.start_consultation_service import StartConsultationService
+from api.converter.start_consultation_converter import StartConsultationConverter
 
 
 class StartConsutationView(APIView):
@@ -19,14 +19,14 @@ class StartConsutationView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     start = StartConsultationService()
-    handler = HandlerConsultation()
+    converter = StartConsultationConverter()
 
     def post(self, request):
-        logging.info(f"API IniciarConsulta acessada por {request.user.username}")
+        logging.info(f"API consultation.start acessada por {request.user.username}")
 
         try:
-            dto = self.handler.start_consultation_from_text(request.body)
-            consultation = self.start.begin(dto)
+            dto = self.converter.from_text(request.body)
+            consultation_dto = self.start.begin(dto)
 
         except InvalidDataException as e:
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
@@ -35,4 +35,5 @@ class StartConsutationView(APIView):
             logging.exception("Ocorreu uma operação inválida ao iniciar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(f"Consulta {consultation.id} Iniciada às {consultation.start_date}", status=status.HTTP_201_CREATED)
+        return Response(f"Consulta {consultation_dto.id} Iniciada às {consultation_dto.start_date}", status=status.HTTP_201_CREATED)
+

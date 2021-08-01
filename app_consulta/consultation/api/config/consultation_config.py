@@ -1,5 +1,9 @@
 
 class ConsultationConfig:
-    price = 200.00
-    scheduler_interval_seconds = 5
+    """ Arquivo de configuração de negócio para a api de consulta
+    obs: poderia ficar em banco de dados """
+
+    price_per_hour = 200.00
+
+
 

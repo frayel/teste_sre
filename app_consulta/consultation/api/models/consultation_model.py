@@ -4,7 +4,9 @@ from django.db import models
 
 
 class ConsultationModel(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    """ Representa o modelo relacional para a Consulta """
+
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     start_date = models.DateTimeField(null=False, auto_now_add=True)
     end_date = models.DateTimeField(null=True)
     physician_id = models.UUIDField(null=False)
