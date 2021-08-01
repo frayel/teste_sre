@@ -20,7 +20,7 @@ class SchedulerService:
             id="scheduler.process_payment",
             seconds=settings.SCHEDULER_INTERVAL_SECONDS,
             replace_existing=True)
-        logging.basicConfig()
+        # logging.basicConfig()
         logging.getLogger('apscheduler').setLevel(logging.ERROR)
         scheduler.start()
 

@@ -18,8 +18,10 @@ class RemotePaymentService:
         user_pass = b64encode(f"{settings.API_USERNAME}:{settings.API_PASSWORD}".encode()).decode("ascii")
         headers = {'Authorization': f"Basic {user_pass}"}
         data = {
-            "appointment_id": payment.appointment_id,
+            "appointment_id": str(payment.appointment_id),
             "total_price": payment.total_price,
         }
-        response = requests.post(settings.FINANCE_PAYMENT_ENDPOINT, data=data, headers=headers, timeout=10)
+        response = requests.post(settings.FINANCE_PAYMENT_ENDPOINT, json=data, headers=headers, timeout=10)
+        if response.status_code >= 300:
+            logging.error(f"Mensagem do Servidor: {response.content.decode()}")
         response.raise_for_status()

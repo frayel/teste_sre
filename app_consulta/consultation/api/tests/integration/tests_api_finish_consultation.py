@@ -1,6 +1,7 @@
 import json
 from uuid import UUID
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
@@ -14,8 +15,8 @@ class ApiFinishConsultationTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user = "admin"
-        cls.password = "teste123"
+        cls.user = settings.API_USERNAME
+        cls.password = settings.API_PASSWORD
         User.objects.create_user(cls.user, "admin@test.com", password=cls.password)
         consultation = ConsultationModel(
             id=UUID("9c317dd5-a237-4e34-a059-96e7d2183aa9"),

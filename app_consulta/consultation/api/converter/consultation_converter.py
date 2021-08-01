@@ -7,17 +7,6 @@ class ConsultationConverter(BaseConverter):
     """ Converte dados da Consulta entre Model e DTO
     """
 
-    def from_dto_to_model(self, dto: ConsultationDto, model: ConsultationModel) -> ConsultationModel:
-        """ Transforma um DTO em um objeto Model """
-        if not model:
-            model = ConsultationModel(id=dto.id)
-        model.start_date = dto.start_date
-        model.end_date = dto.end_date
-        model.physician_id = dto.physician_id
-        model.patient_id = dto.patient_id
-        model.price = dto.price
-        return model
-
     def from_model_to_dto(self, model: ConsultationModel) -> ConsultationDto:
         """ Transforma um objeto Model em um DTO """
         dto = ConsultationDto(
