@@ -1,13 +1,13 @@
 import logging
 
-from api.repository.payment_repository import PaymentRepository
+from api.repository.pending_payment_repository import PendingPaymentRepository
 from api.service.remote.remote_payment_service import RemotePaymentService
 
 
 class ProcessPaymentService:
     """ Serviço para processamento dos pagamentos pendentes de envio à api financeira """
 
-    payment_repository = PaymentRepository()
+    payment_repository = PendingPaymentRepository()
     remote_payment_service = RemotePaymentService()
 
     def process(self) -> None:

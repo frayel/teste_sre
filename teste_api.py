@@ -12,8 +12,8 @@ import requests
 
 username = "admin"
 password = "teste123"
-endpoint_start = "http://127.0.0.1:8000/app/consultation/start/"
-endpoint_finish = "http://127.0.0.1:8000/app/consultation/finish/"
+endpoint_start = "http://127.0.0.1:8010/app/consultation/start/"
+endpoint_finish = "http://127.0.0.1:8010/app/consultation/finish/"
 
 
 def main():

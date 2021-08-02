@@ -45,7 +45,7 @@ O sistema está distribuido em 3 containers: API Consulta, API Financeira e DB P
 	Ou realizar as chamadas:
 		
 	* Registrando o início da consulta:
-		POST http://172.18.0.4/app/consultation/start/
+		POST http://localhost:8010/app/consultation/start/
 		HEADER 
 			content-type: application/json
 			authorization: Basic YWRtaW46dGVzdGUxMjM=
@@ -56,14 +56,15 @@ O sistema está distribuido em 3 containers: API Consulta, API Financeira e DB P
 			}
 	
 	* Registrando o término da consulta:
-		POST http://172.18.0.4/app/consultation/finish/
+		POST http://localhost:8010/app/consultation/finish/
 		HEADER 
 			content-type: application/json
 			authorization: Basic YWRtaW46dGVzdGUxMjM=
 		BODY
 			{
-				"consultation_id": "25b1b0e4-23cd-4764-ad3d-ac7fcbb76f5a"
+				"consultation_id": "25b1b0e4-23cd-4764-ad3d-ac7fcbb76f5a",
+				"end_date": "2021-08-02T12:00:00"
 			}
-		
+		* A data de término é opcional e será usada a data e hora atual caso seja omitido.
 		* O registro na API financeira é feito automaticamente pelo sistema
 	

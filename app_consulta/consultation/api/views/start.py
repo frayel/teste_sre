@@ -1,5 +1,6 @@
 import logging
 
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -34,12 +35,12 @@ class StartConsutationView(APIView):
             # Chama o serviço para iniciar a consulta
             consultation_dto = self.start.begin(input_dto)
 
-        except InvalidDataException as e:
+        except (InvalidDataException, ValidationError, InvalidOperationException) as e:
             # Responde com o status 400 no caso de existir dados inválidos no parametro
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        except InvalidOperationException as e:
-            # Responde com status 400 no caso de ocorrer um erro no serviço
+        except Exception as e:
+            # Responde com status 400 no caso de ocorrer um erro não especificado
             logging.exception("Ocorreu uma operação inválida ao iniciar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 

@@ -10,4 +10,6 @@ class ApiConfig(AppConfig):
         # Inicia o scheduler de processamento
         from api.service.scheduler_service import SchedulerService
         scheduler_service = SchedulerService()
+        scheduler_service.reset_processing_flag()
         scheduler_service.start()
+

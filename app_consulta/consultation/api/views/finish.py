@@ -1,5 +1,6 @@
 import logging
 
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -33,12 +34,12 @@ class FinishConsutationView(APIView):
             # Chama o serviço para iniciar a consulta
             consultation_dto = self.finish.end(input_dto)
 
-        except InvalidDataException as e:
+        except (InvalidDataException, ValidationError, InvalidOperationException) as e:
             # Responde com o status 400 no caso de haver dados inválidos na entrada
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        except InvalidOperationException as e:
-            # Responde com status 400 no caso de ocorrer um erro no serviço
+        except Exception as e:
+            # Responde com status 400 no caso de ocorrer um erro não especificado
             logging.exception("Ocorreu uma operação inválida ao encerrar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 

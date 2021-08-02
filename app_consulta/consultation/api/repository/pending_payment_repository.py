@@ -4,7 +4,7 @@ from api.dto.pending_payment_dto import PendingPaymentDto
 from api.models.pending_payment_model import PendingPaymentModel
 
 
-class PaymentRepository:
+class PendingPaymentRepository:
     """ Camada de persistência ao dados da Pendência de Pagamento """
 
     objects = PendingPaymentModel.objects
@@ -34,5 +34,11 @@ class PaymentRepository:
         """ Marca o registro de de pendenencia como processada """
         db_model = self.objects.get(appointment_id=appointment_id)
         db_model.finished = True
+        db_model.processing = False
         db_model.save(update_fields=['finished'])
+
+    def reset_processing_flag(self):
+        """ Define a flag de processamento para false, de todos os pagamentos pendentes. """
+        updated_rows = self.objects.filter(processing=True, finished=False).update(processing=False)
+        return updated_rows
 

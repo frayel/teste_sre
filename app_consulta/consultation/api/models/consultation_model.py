@@ -21,8 +21,8 @@ class ConsultationModel(models.Model):
     def to_dto(self) -> ConsultationDto:
         return ConsultationDto(
             id=self.id,
-            start_date=self.start_date,
-            end_date=self.end_date,
+            start_date=self.start_date.replace(microsecond=0) if self.start_date else None,
+            end_date=self.end_date.replace(microsecond=0) if self.end_date else None,
             physician_id=self.physician_id,
             patient_id=self.patient_id,
             price=self.price,
