@@ -35,7 +35,7 @@ class PendingPaymentRepository:
         db_model = self.objects.get(appointment_id=appointment_id)
         db_model.finished = True
         db_model.processing = False
-        db_model.save(update_fields=['finished'])
+        db_model.save(update_fields=['finished', 'processing'])
 
     def reset_processing_flag(self):
         """ Define a flag de processamento para false, de todos os pagamentos pendentes. """
