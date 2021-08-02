@@ -16,6 +16,24 @@ esteja disponivel, o sistema continuará tentando realizar o envio.
 As pendências de pagamento são alimentadas pelo serviço de término de consulta, que gera um registro
 assim que a consulta é encerrada.
 
+
+# Estrutura
+```
+├───api                
+│   ├───config       Arquivo de configuração de negocio. Ex: Preço da consulta
+│   ├───dto          Objetos para transferencia de dados entre camadas
+│   ├───exceptions   Classe de exceções customizadas
+│   ├───models       Entidades de dados relacionais (database models)
+│   ├───repository   Camada de persistência
+│   ├───service      Camada de serviço 
+│   │   └───remote   Serviço de integração a APIs externas (ex: financeiro) 
+│   ├───tests        Testes automatizados
+│   └───views        Camada de exposição dos serviços (endpoints)
+├───consultation         
+    settings.py          Arquivo de configuração global
+    settings-prd.py      Arquivo de configuração quando estiver dodando em container
+```    
+
  
 ## Autenticação
 Para autenticar nas apis deve-se usar o modo Basic (username: admin, password: teste123)  
@@ -25,6 +43,9 @@ O banco de dados usado é o postgresql. Foram usadas 3 tabelas:
 - consultation: Registra as consultas pela API de cosultas.
 - pending_payment: Registra uma pendência de processamento ao término de uma consulta.
 - payment: Registra a entrada no sistema financeiro pela API de finança.
+
+Para simplificação, nao foram criados registros para médico e paciente. Portanto o sistema não irá
+validar se o código existe em cadastro.
 
 Se necessario conectar na base de dados
 ```
@@ -97,7 +118,7 @@ BODY
 
 * Registrando o término da consulta:
 ```
-POST http://localhost:8010/app/consultation/finish/
+PUT http://localhost:8010/app/consultation/finish/
 
 HEADER 
 content-type: application/json

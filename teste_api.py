@@ -26,7 +26,7 @@ def encerrar_consulta(consulta):
     data = {
         "consultation_id": consulta["id"],
     }
-    response = requests.post(endpoint_finish, json=data, headers=headers, timeout=10)
+    response = requests.put(endpoint_finish, json=data, headers=headers, timeout=10)
     response.raise_for_status()
     print(f"Consulta {consulta['id']} encerrada.")
 

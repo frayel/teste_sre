@@ -34,7 +34,7 @@ class ApiFinishConsultationTest(TestCase):
             "consultation_id": "9c317dd5-a237-4e34-a059-96e7d2183aa9"
         }
         self.client.login(username=self.user, password=self.password)
-        response = self.client.post(url, json.dumps(data), content_type="text/plain")
+        response = self.client.put(url, json.dumps(data), content_type="text/plain")
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
         consultation = ConsultationModel.objects.filter(id="9c317dd5-a237-4e34-a059-96e7d2183aa9").first()
         self.assertIsNotNone(consultation.end_date)
@@ -45,7 +45,7 @@ class ApiFinishConsultationTest(TestCase):
         data = {
             "consultation_id": "9c317dd5-a237-4e34-a059-96e7d2183aa9"
         }
-        response = self.client.post(url, json.dumps(data), content_type="text/plain")
+        response = self.client.put(url, json.dumps(data), content_type="text/plain")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_api_finish_empty_data(self):
@@ -54,14 +54,14 @@ class ApiFinishConsultationTest(TestCase):
             "consultation_id": ""
         }
         self.client.login(username=self.user, password=self.password)
-        response = self.client.post(url, json.dumps(data), content_type='text/plain')
+        response = self.client.put(url, json.dumps(data), content_type='text/plain')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_api_start_empty_keys(self):
         url = reverse("finish_consultation")
         data = {}
         self.client.login(username=self.user, password=self.password)
-        response = self.client.post(url, json.dumps(data), content_type='text/plain')
+        response = self.client.put(url, json.dumps(data), content_type='text/plain')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_api_finish_twice(self):
@@ -70,8 +70,8 @@ class ApiFinishConsultationTest(TestCase):
             "consultation_id": "9c317dd5-a237-4e34-a059-96e7d2183aa9"
         }
         self.client.login(username=self.user, password=self.password)
-        response = self.client.post(url, json.dumps(data), content_type="text/plain")
+        response = self.client.put(url, json.dumps(data), content_type="text/plain")
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
-        response = self.client.post(url, json.dumps(data), content_type="text/plain")
+        response = self.client.put(url, json.dumps(data), content_type="text/plain")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

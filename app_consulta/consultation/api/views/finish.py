@@ -26,7 +26,7 @@ class FinishConsutationView(APIView):
     # Classe de serviço para término da consulta
     finish = FinishConsultationService()
 
-    def post(self, request):
+    def put(self, request):
         logging.info(f"API consultation.finish acessada por {request.user.username}")
         try:
             # Converte o texto de entrada em dto
