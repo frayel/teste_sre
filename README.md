@@ -19,19 +19,19 @@ assim que a consulta é encerrada.
 
 # Estrutura
 ```
-├───api                
-│   ├───config       Arquivo de configuração de negocio. Ex: Preço da consulta
-│   ├───dto          Objetos para transferencia de dados entre camadas
-│   ├───exceptions   Classe de exceções customizadas
-│   ├───models       Entidades de dados relacionais (database models)
-│   ├───repository   Camada de persistência
-│   ├───service      Camada de serviço 
-│   │   └───remote   Serviço de integração a APIs externas (ex: financeiro) 
-│   ├───tests        Testes automatizados
-│   └───views        Camada de exposição dos serviços (endpoints)
-├───consultation         
-    settings.py          Arquivo de configuração global
-    settings-prd.py      Arquivo de configuração quando estiver dodando em container
+├─── api                
+│    ├─── config       Arquivo de configuração de negocio. Ex: Preço da consulta
+│    ├─── dto          Objetos para transferencia de dados entre camadas
+│    ├─── exceptions   Classe de exceções customizadas
+│    ├─── models       Entidades de dados relacionais (database models)
+│    ├─── repository   Camada de persistência
+│    ├─── service      Camada de serviço 
+│    │    └── remote   Serviço de integração a APIs externas (ex: financeiro) 
+│    ├─── tests        Testes automatizados
+│    └─── views        Camada de exposição dos serviços (endpoints)
+├─── consultation         
+├─── settings.py      Arquivo de configuração global
+└─── settings-prd.py  Arquivo de configuração quando estiver dodando em container
 ```    
 
  
