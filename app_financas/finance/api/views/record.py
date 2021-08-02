@@ -1,12 +1,14 @@
 import logging
 
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.converter.payment_converter import PaymentConverter
+from api.dto.payment_dto import PaymentDto
 from api.exceptions.invalid_data import InvalidDataException
 from api.exceptions.invalid_operation import InvalidOperationException
 from api.service.payment_service import PaymentService
@@ -23,15 +25,12 @@ class RecordView(APIView):
     # Classe de serviço para registro financeiro
     service = PaymentService()
 
-    # Conversor da entrada em dto
-    converter = PaymentConverter()
-
     def post(self, request):
         logging.info(f"API finance.record acessada por {request.user.username}")
 
         try:
             # Converte o texto de entrada em dto
-            input_dto = self.converter.from_text(request.body)
+            input_dto = PaymentDto().from_dict(JSONParser().parse(request))
             # Chama o serviço para registrar o recebimento
             payment_dto = self.service.record(input_dto)
 
@@ -44,4 +43,4 @@ class RecordView(APIView):
             logging.exception("Ocorreu uma operação inválida ao registrar o pagamento.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(self.converter.dto_to_json(payment_dto), status=status.HTTP_201_CREATED)
+        return JsonResponse(payment_dto.__dict__, status=status.HTTP_201_CREATED)

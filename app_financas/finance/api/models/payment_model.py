@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 
+from api.dto.payment_dto import PaymentDto
+
 
 class PaymentModel(models.Model):
     """ Representa o modelo relacional para a pendência de pagamento """
@@ -12,3 +14,10 @@ class PaymentModel(models.Model):
 
     class Meta:
         db_table = "payment"
+
+    def to_dto(self) -> PaymentDto:
+        return PaymentDto(
+            id=self.id,
+            appointment_id=self.appointment_id,
+            total_price=self.total_price,
+        )

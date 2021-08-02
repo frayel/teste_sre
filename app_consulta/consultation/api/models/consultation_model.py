@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 
+from api.dto.consultation_dto import ConsultationDto
+
 
 class ConsultationModel(models.Model):
     """ Representa o modelo relacional para a Consulta """
@@ -15,3 +17,13 @@ class ConsultationModel(models.Model):
 
     class Meta:
         db_table = "consultation"
+
+    def to_dto(self) -> ConsultationDto:
+        return ConsultationDto(
+            id=self.id,
+            start_date=self.start_date,
+            end_date=self.end_date,
+            physician_id=self.physician_id,
+            patient_id=self.patient_id,
+            price=self.price,
+        )

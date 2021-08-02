@@ -50,6 +50,13 @@ class ApiStartConsultationTest(TestCase):
         response = self.client.post(url, json.dumps(data), content_type='text/plain')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_api_start_empty_keys(self):
+        url = reverse("start_consultation")
+        data = {}
+        self.client.login(username=self.user, password=self.password)
+        response = self.client.post(url, json.dumps(data), content_type='text/plain')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_api_start_twice(self):
         url = reverse("start_consultation")
         data = {

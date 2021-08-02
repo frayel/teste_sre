@@ -2,18 +2,17 @@ from uuid import UUID
 
 from api.dto.consultation_dto import ConsultationDto
 from api.models.consultation_model import ConsultationModel
-from api.converter.consultation_converter import ConsultationConverter
 
 
 class ConsultationRepository:
     """ Camada de persistência ao dados da Consulta """
 
     objects = ConsultationModel.objects
-    converter = ConsultationConverter()
 
     def get_by_consultation_id(self, pk: UUID) -> ConsultationDto:
         """ Obtem uma consulta pelo id """
-        return self.converter.from_model_to_dto(self.objects.get(id=pk))
+        model = self.objects.get(id=pk)
+        return model.to_dto() if model else None
 
     def is_patient_in_consultation(self, patient_id: UUID) -> bool:
         """ Verifica se um paciente está em uma consulta não finalizada """
@@ -28,8 +27,7 @@ class ConsultationRepository:
         db_model.patient_id = dto.patient_id
         db_model.price = dto.price
         db_model.save()
-
-        return self.converter.from_model_to_dto(db_model)
+        return db_model.to_dto()
 
     def save_finish(self, dto: ConsultationDto) -> ConsultationDto:
         """ Grava o encerramento de uma consulta """
@@ -37,5 +35,5 @@ class ConsultationRepository:
         db_model.end_date = dto.end_date
         db_model.price = dto.price
         db_model.save(update_fields=["end_date", "price"])
-        return self.converter.from_model_to_dto(db_model)
+        return db_model.to_dto()
 

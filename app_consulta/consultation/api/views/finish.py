@@ -1,12 +1,14 @@
 import logging
 
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.converter.consultation_converter import ConsultationConverter
+from api.dto.finish_consultation_parameter_dto import FinishConsultationParameterDto
 from api.exceptions.invalid_data import InvalidDataException
 from api.exceptions.invalid_operation import InvalidOperationException
 from api.service.finish_consultation_service import FinishConsultationService
@@ -23,14 +25,11 @@ class FinishConsutationView(APIView):
     # Classe de serviço para término da consulta
     finish = FinishConsultationService()
 
-    # Conversor da entrada em dto
-    converter = ConsultationConverter()
-
     def post(self, request):
         logging.info(f"API consultation.finish acessada por {request.user.username}")
         try:
             # Converte o texto de entrada em dto
-            input_dto = self.converter.finish_data_from_text(request.body)
+            input_dto = FinishConsultationParameterDto().from_dict(JSONParser().parse(request)).validate()
             # Chama o serviço para iniciar a consulta
             consultation_dto = self.finish.end(input_dto)
 
@@ -43,5 +42,5 @@ class FinishConsutationView(APIView):
             logging.exception("Ocorreu uma operação inválida ao encerrar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(self.converter.dto_to_json(consultation_dto), status=status.HTTP_202_ACCEPTED)
+        return JsonResponse(consultation_dto.__dict__, status=status.HTTP_202_ACCEPTED)
 

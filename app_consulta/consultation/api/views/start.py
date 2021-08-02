@@ -1,12 +1,14 @@
 import logging
 
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.converter.consultation_converter import ConsultationConverter
+from api.dto.start_consultation_parameter_dto import StartConsultationParameterDto
 from api.exceptions.invalid_data import InvalidDataException
 from api.exceptions.invalid_operation import InvalidOperationException
 from api.service.start_consultation_service import StartConsultationService
@@ -23,15 +25,12 @@ class StartConsutationView(APIView):
     # Classe de serviço para inicio da consulta
     start = StartConsultationService()
 
-    # Conversor da entrada em dto
-    converter = ConsultationConverter()
-
     def post(self, request):
         logging.info(f"API consultation.start acessada por {request.user.username}")
 
         try:
             # Converte o texto de entrada em dto
-            input_dto = self.converter.start_data_from_text(request.body)
+            input_dto = StartConsultationParameterDto().from_dict(JSONParser().parse(request)).validate()
             # Chama o serviço para iniciar a consulta
             consultation_dto = self.start.begin(input_dto)
 
@@ -44,5 +43,5 @@ class StartConsutationView(APIView):
             logging.exception("Ocorreu uma operação inválida ao iniciar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(self.converter.dto_to_json(consultation_dto), status=status.HTTP_201_CREATED)
+        return JsonResponse(consultation_dto.__dict__, status=status.HTTP_201_CREATED)
 

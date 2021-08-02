@@ -16,3 +16,12 @@ class PendingPaymentDto:
         self.processing = processing
         self.finished = finished
 
+    def from_dict(self, dict_value: dict):
+        self.id = dict_value["id"] if "id" in dict_value else None
+        self.appointment_id = dict_value["appointment_id"] if "appointment_id" in dict_value else None
+        self.total_price = dict_value["total_price"] if "total_price" in dict_value else None
+        self.tries = dict_value["tries"] if "tries" in dict_value else None
+        self.processing = dict_value["processing"] if "processing" in dict_value else None
+        self.finished = dict_value["finished"] if "finished" in dict_value else None
+        return self
+
