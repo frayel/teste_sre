@@ -19,12 +19,14 @@ class RecordView(APIView):
     """ View para registro financeiro de uma consulta
         url: /app/finance/record/ """
 
-    # Definição para autenticação
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Definição para autenticação
+        self.authentication_classes = [SessionAuthentication, BasicAuthentication]
+        self.permission_classes = [IsAuthenticated]
 
-    # Classe de serviço para registro financeiro
-    service = PaymentService()
+        # Classe de serviço para registro financeiro
+        self.service = PaymentService()
 
     def post(self, request):
         logging.info(f"API finance.record acessada por {request.user.username}")

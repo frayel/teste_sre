@@ -7,7 +7,8 @@ from api.models.consultation_model import ConsultationModel
 class ConsultationRepository:
     """ Camada de persistência de dados da Consulta """
 
-    objects = ConsultationModel.objects
+    def __init__(self):
+        self.objects = ConsultationModel.objects
 
     def get_by_consultation_id(self, pk: UUID) -> ConsultationDto:
         """ Obtem uma consulta pelo id """

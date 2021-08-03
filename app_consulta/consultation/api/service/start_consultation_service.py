@@ -9,7 +9,8 @@ from api.repository.consultation_repository import ConsultationRepository
 class StartConsultationService:
     """ Serviço de início de atendimento de uma consulta """
 
-    consultation_repository = ConsultationRepository()
+    def __init__(self):
+        self.consultation_repository = ConsultationRepository()
 
     def begin(self, start_dto: StartConsultationParameterDto) -> ConsultationDto:
         """ Constroi o objeto dto completo, com os parametros recebidos """

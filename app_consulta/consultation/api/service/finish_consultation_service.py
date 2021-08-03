@@ -18,9 +18,10 @@ class FinishConsultationService:
         Executado em uma transação atomica, portanto em caso de erro, as alteracoes nao serao gravadas
     """
 
-    consultation_repository = ConsultationRepository()
-    payment_repository = PendingPaymentRepository()
-    price_calculator = PriceCalculator()
+    def __init__(self):
+        self.consultation_repository = ConsultationRepository()
+        self.payment_repository = PendingPaymentRepository()
+        self.price_calculator = PriceCalculator()
 
     @transaction.atomic
     def end(self, finish_dto: FinishConsultationParameterDto) -> ConsultationDto:

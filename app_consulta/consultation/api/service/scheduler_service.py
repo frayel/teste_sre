@@ -12,8 +12,9 @@ scheduler = BackgroundScheduler(settings.SCHEDULER_CONFIG)
 class SchedulerService:
     """ Agendador de tarefa pra processar os pagamentos pendentes de envio à api financeira """
 
-    payment_service = ProcessPaymentService()
-    repository = PendingPaymentRepository()
+    def __init__(self):
+        self.payment_service = ProcessPaymentService()
+        self.repository = PendingPaymentRepository()
 
     def start(self) -> BackgroundScheduler:
         """ Inicia o agendador para processar os pagamentos pendentes no intervalo determinado """

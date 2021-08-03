@@ -7,7 +7,8 @@ from api.models.payment_model import PaymentModel
 class PaymentRepository:
     """ Camada de persistência de dados do Pagamento """
 
-    objects = PaymentModel.objects
+    def __init__(self):
+        self.objects = PaymentModel.objects
 
     def get_by_appointment_id(self, pk: UUID) -> PaymentDto:
         """ Obtem um pagamento pelo id da consulta """

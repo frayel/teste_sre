@@ -19,12 +19,14 @@ class StartConsutationView(APIView):
     """ View para início de uma consulta
         url: /app/consultation/start/ """
 
-    # Definição para autenticação
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Definição para autenticação
+        self.authentication_classes = [SessionAuthentication, BasicAuthentication]
+        self.permission_classes = [IsAuthenticated]
 
-    # Classe de serviço para inicio da consulta
-    start = StartConsultationService()
+        # Classe de serviço para inicio da consulta
+        self.start = StartConsultationService()
 
     def post(self, request):
         logging.info(f"API consultation.start acessada por {request.user.username}")

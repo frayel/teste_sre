@@ -7,7 +7,8 @@ from api.models.pending_payment_model import PendingPaymentModel
 class PendingPaymentRepository:
     """ Camada de persistência de dados da Pendência de Pagamento """
 
-    objects = PendingPaymentModel.objects
+    def __init__(self):
+        self.objects = PendingPaymentModel.objects
 
     def get_by_appointment_id(self, pk: UUID) -> PendingPaymentDto:
         """ Obtem uma pendencia de pagamento pelo id da consulta """

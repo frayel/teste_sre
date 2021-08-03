@@ -10,8 +10,9 @@ class PriceCalculator:
     """ Calcula o preço de uma consulta
         Obs: O valor mínimo será de o valor de 1h e os minutos excedentes serão proporcionais """
 
-    # Arquivo de configuração com os parametros do calculo
-    config = ConsultationConfig()
+    def __init__(self):
+        # Arquivo de configuração com os parametros do calculo
+        self.config = ConsultationConfig()
 
     def calculate(self, start_date: datetime, end_date: datetime) -> Decimal:
         logging.info('Realizando o cálculo de preços...')

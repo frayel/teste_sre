@@ -8,7 +8,8 @@ from api.repository.payment_repository import PaymentRepository
 class PaymentService:
     """ Serviço de registro de pagamento de uma consulta """
 
-    payment_repository = PaymentRepository()
+    def __init__(self):
+        self.payment_repository = PaymentRepository()
 
     def record(self, payment_dto: PaymentDto) -> PaymentDto:
 

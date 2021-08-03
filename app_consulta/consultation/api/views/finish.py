@@ -19,12 +19,14 @@ class FinishConsutationView(APIView):
     """ View para término de uma consulta
         url: /app/consultation/finish/ """
 
-    # Definição para autenticação
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Definição para autenticação
+        self.authentication_classes = [SessionAuthentication, BasicAuthentication]
+        self.permission_classes = [IsAuthenticated]
 
-    # Classe de serviço para término da consulta
-    finish = FinishConsultationService()
+        # Classe de serviço para término da consulta
+        self.finish = FinishConsultationService()
 
     def put(self, request):
         logging.info(f"API consultation.finish acessada por {request.user.username}")

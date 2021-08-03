@@ -7,8 +7,9 @@ from api.service.remote.remote_payment_service import RemotePaymentService
 class ProcessPaymentService:
     """ Serviço para processamento dos pagamentos pendentes de envio à api financeira """
 
-    payment_repository = PendingPaymentRepository()
-    remote_payment_service = RemotePaymentService()
+    def __init__(self):
+        self.payment_repository = PendingPaymentRepository()
+        self.remote_payment_service = RemotePaymentService()
 
     def process(self) -> None:
         for p in self.payment_repository.get_process_pending():
