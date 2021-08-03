@@ -1,5 +1,6 @@
 # iClinic Teste SRE Arquiteto
-O teste consiste em 2 microserviços que possibilitam realizar uma consulta entre um médico e um paciente e gerar uma entrada financeira de cobrança da consulta.  
+O teste consiste em 2 microserviços que possibilitam realizar uma consulta entre um médico e um paciente e 
+gerar uma entrada financeira de cobrança da consulta.  
 
 Realizado em Agosto/2021 por Felipe Rayel <felipe.rayel@gmail.com>
 
@@ -17,7 +18,7 @@ As pendências de pagamento são alimentadas pelo serviço de término de consul
 assim que a consulta é encerrada.
 
 
-# Estrutura
+## Estrutura
 ```
 ├─── api                
 │    ├─── config       Arquivo de configuração de negocio. Ex: Preço da consulta
@@ -38,7 +39,7 @@ assim que a consulta é encerrada.
 ## Autenticação
 Para autenticar nas apis deve-se usar o modo Basic (username: admin, password: teste123)  
 
-# Banco de dados
+## Banco de dados
 O banco de dados usado é o postgresql. Foram usadas 3 tabelas:
 - consultation: Registra as consultas pela API de cosultas.
 - pending_payment: Registra uma pendência de processamento ao término de uma consulta.
@@ -47,7 +48,8 @@ O banco de dados usado é o postgresql. Foram usadas 3 tabelas:
 Para simplificação, nao foram criados registros para médico e paciente. Portanto o sistema não irá
 validar se o código existe em cadastro.
 
-Se necessario conectar na base de dados
+Dados para conexão:
+
 ```
 ip: 127.0.0.1:5432
 db: postgres
@@ -55,29 +57,31 @@ username: postgres
 password: pg123
 ```  
  
-## API Consulta
-Possui 2 endpoints:  
+## Serviço de Consulta
+O serviço é responsável por iniciar e encerrar uma consulta e possui 2 endpoints:  
 - app/consultation/start - Realiza o registro do inicio de uma consulta  
-- app/consultation/finish - Realiza o registro de termino de uma consulta e faz o envio de
-uma entrada no sistema financeiro de modo assíncrono.     
+- app/consultation/finish - Realiza o registro de termino de uma consulta e 
+faz o envio da entrada no sistema financeiro de modo assíncrono.     
 
 Scheduler:  
-* Verifica a cada 5 segundos se existem pendencias de entrada financeira a serem processados.  
+* Verifica a cada 5 segundos se existem pendências de entrada financeira a serem processadas.  
 Se existir, realiza a chamada da API financeira para registro.  
-Em caso de erro ou indisponibilidade, o sistema continuará tentando até conseguir, registrando o numero de tentativas.  
+Em caso de erro ou indisponibilidade, o sistema continuará tentando até conseguir, registrando o número de tentativas.  
 	
-## API Financeira	
-Possui 1 endpoint:  
+## Serviço de Finanças	
+O serviço é responsável por registrar a entrada financeira de uma consulta. Possui 1 endpoint:  
 * app/finance/record - Realiza o registro de uma entrada financeira  
 
-## Para criar os containers docker:
+## Containers Docker
+
+### Para criar os containers:
 ```bash
 $> docker build -t app_consulta app_consulta
 $> docker build -t app_financas app_financas
 ```
 ou executar docker_build.bat  
 
-## Para subir os containers:
+### Para criar a rede e executar os containers:
 ```bash
 $> docker network create --subnet=172.18.0.0/16 rede_teste  
 $> docker run --net rede_teste --ip 172.18.0.2 --name postgres -e "POSTGRES_PASSWORD=pg123" -p 5432:5432 -d postgres  
@@ -86,21 +90,22 @@ $> docker run --net rede_teste --ip 172.18.0.4 -it -p 8020:8020 --name app_finan
 ```
 ou executar docker_run.bat  
 
-## Para rodar o ambiente de dev
+## Ambiente de Desenvolvimento 
+Para rodar o ambiente de desenvolvimento localmente:
 ```bash
 $> python manage.py migrate
 $> python manage.py createsuperuser (com login/senha: admin/teste123)
 $> python manage.py runserver 8000 -> Para a api de consultas
 $> python manage.py runserver 8001 -> para a api de financas
 ```
-OBS: As configurações usadas pelo container estão no arquivo settings-prd.py 
+OBS: As configurações usadas em desenvolvimento ficam no settings.py e quando estão no container são lidas do arquivo settings-prd.py 
 
 ## Realizando chamadas
 
 Executar o script teste_api.py para iniciar e encerrar uma consulta
-Ou realizar as chamadas através de cliente http:
+ou realizar as chamadas através de um cliente http:
     
-* Registrando o início da consulta:
+### Registrando o início da consulta:
  
 ```
 POST http://localhost:8010/app/consultation/start/
@@ -116,7 +121,7 @@ BODY
 }
 ```
 
-* Registrando o término da consulta:
+### Registrando o término da consulta:
 ```
 PUT http://localhost:8010/app/consultation/finish/
 
@@ -130,6 +135,6 @@ BODY
     "end_date": "2021-08-02T12:00:00"
 }
 ```    
-* A data de término é opcional e será usada a data e hora atual caso seja omitida.
+* A data de término é opcional e será usada a data e hora atual caso não seja informada.
 * O registro na API financeira é feito automaticamente pelo sistema de modo assíncrono.
 

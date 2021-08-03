@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 from uuid import UUID
 
 from api.exceptions.invalid_data import InvalidDataException
 
 
+@dataclass
 class StartConsultationParameterDto:
     """ Objeto de parametro para api de início de consulta """
 

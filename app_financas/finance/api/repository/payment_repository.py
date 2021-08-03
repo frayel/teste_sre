@@ -5,7 +5,7 @@ from api.models.payment_model import PaymentModel
 
 
 class PaymentRepository:
-    """ Camada de persistência ao dados do Pagamento """
+    """ Camada de persistência de dados do Pagamento """
 
     objects = PaymentModel.objects
 

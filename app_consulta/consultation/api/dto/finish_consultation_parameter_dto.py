@@ -1,9 +1,11 @@
 import datetime
+from dataclasses import dataclass
 from uuid import UUID
 
 from api.exceptions.invalid_data import InvalidDataException
 
 
+@dataclass
 class FinishConsultationParameterDto:
     """ Objeto de parametro para api de termino de consulta """
 

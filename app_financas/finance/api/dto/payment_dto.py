@@ -1,11 +1,13 @@
+from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
 
 from api.exceptions.invalid_data import InvalidDataException
 
 
+@dataclass
 class PaymentDto:
-    """ Objeto de transferência para o pagamento """
+    """ Objeto de transferência para o registro financeiro de uma consulta """
 
     def __init__(self, id: int = None, appointment_id: UUID = None,
                  total_price: Decimal = None):

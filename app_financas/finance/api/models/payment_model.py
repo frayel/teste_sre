@@ -6,7 +6,7 @@ from api.dto.payment_dto import PaymentDto
 
 
 class PaymentModel(models.Model):
-    """ Representa o modelo relacional para a pendência de pagamento """
+    """ Representa o modelo relacional do registro de pagamento """
 
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     appointment_id = models.UUIDField(null=False, editable=False, unique=True)

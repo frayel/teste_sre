@@ -30,7 +30,7 @@ class RecordView(APIView):
         logging.info(f"API finance.record acessada por {request.user.username}")
 
         try:
-            # Converte o texto de entrada em dto
+            # Converte a entrada em DTO
             input_dto = PaymentDto().from_dict(JSONParser().parse(request))
             # Chama o serviço para registrar o recebimento
             payment_dto = self.service.record(input_dto)
@@ -40,7 +40,7 @@ class RecordView(APIView):
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            # Responde com status 400 no caso de ocorrer um erro não especificado
+            # Responde com status 400 e registra em log no caso de ocorrer um erro não especificado
             logging.exception("Ocorreu uma operação inválida ao registrar o pagamento.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 

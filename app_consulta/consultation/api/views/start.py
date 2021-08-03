@@ -30,7 +30,7 @@ class StartConsutationView(APIView):
         logging.info(f"API consultation.start acessada por {request.user.username}")
 
         try:
-            # Converte o texto de entrada em dto
+            # Converte a entrada em DTO
             input_dto = StartConsultationParameterDto().from_dict(JSONParser().parse(request)).validate()
             # Chama o serviço para iniciar a consulta
             consultation_dto = self.start.begin(input_dto)
@@ -40,7 +40,7 @@ class StartConsutationView(APIView):
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            # Responde com status 400 no caso de ocorrer um erro não especificado
+            # Responde com status 400 e registra em log no caso de ocorrer um erro não especificado
             logging.exception("Ocorreu uma operação inválida ao iniciar a consulta.")
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 

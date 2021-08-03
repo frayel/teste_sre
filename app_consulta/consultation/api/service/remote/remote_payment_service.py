@@ -13,7 +13,7 @@ class RemotePaymentService:
 
     payment_repository = PendingPaymentRepository()
 
-    def send(self, payment: PendingPaymentDto) -> None:
+    def send(self, payment: PendingPaymentDto) -> bool:
         logging.info(f'Realizando chamda remota para {settings.FINANCE_PAYMENT_ENDPOINT}')
         user_pass = b64encode(f"{settings.API_USERNAME}:{settings.API_PASSWORD}".encode()).decode("ascii")
         headers = {'Authorization': f"Basic {user_pass}"}
@@ -25,3 +25,4 @@ class RemotePaymentService:
         if response.status_code >= 300:
             logging.error(f"Mensagem do Servidor: {response.content.decode()}")
         response.raise_for_status()
+        return True

@@ -5,7 +5,7 @@ from api.models.consultation_model import ConsultationModel
 
 
 class ConsultationRepository:
-    """ Camada de persistência ao dados da Consulta """
+    """ Camada de persistência de dados da Consulta """
 
     objects = ConsultationModel.objects
 

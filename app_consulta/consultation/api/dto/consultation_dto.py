@@ -1,8 +1,10 @@
 import datetime
+from dataclasses import dataclass
 from decimal import Decimal
 from uuid import UUID
 
 
+@dataclass
 class ConsultationDto:
     """ Objeto de transferencia para a consulta """
 
