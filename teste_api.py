@@ -17,8 +17,9 @@ endpoint_finish = "http://localhost:8010/app/consultation/finish/"
 
 
 def main():
-    consulta = criar_consulta()
-    encerrar_consulta(consulta)
+    for i in range(1, 50):
+        consulta = criar_consulta()
+        encerrar_consulta(consulta)
 
 
 def encerrar_consulta(consulta):
