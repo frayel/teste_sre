@@ -24,6 +24,9 @@ class FinishConsultationService:
 
     @transaction.atomic
     def end(self, finish_dto: FinishConsultationParameterDto) -> ConsultationDto:
+        """ Realiza o encerramento do atendimento e grava o pagamento para ser processado pelo scheduler.
+            o decorator transaction.atomic garante que o método será realizado em uma transação atômica, ou seja,
+            haverá rollback em caso de erro."""
 
         try:
             # Localiza a consulta atraves do parametro recebido
@@ -31,7 +34,7 @@ class FinishConsultationService:
 
             if consultation_dto:
                 if not consultation_dto.end_date:
-                    # Se a consulta ainda nao foi encerrada, calcula o preco e define o horário de término
+                    # Se a consulta ainda não foi encerrada, calcula o preco e define o horário de término
                     consultation_dto.end_date = finish_dto.end_date if finish_dto.end_date else timezone.now()
                     consultation_dto.price = self.price_calculator.calculate(consultation_dto.start_date, consultation_dto.end_date)
 

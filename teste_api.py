@@ -6,7 +6,7 @@ import requests
 """ 
     Script de teste da API
     Este script irá criar uma consulta com dados aleatorios e em seguida irá finaliza-la
-    Para rodar este script nao é necessário nenhuma dependencia do projeto e basta executar
+    Para rodar este script nao é necessário nenhuma dependencia do projeto e basta executar:
     python teste_api.py 
 """
 

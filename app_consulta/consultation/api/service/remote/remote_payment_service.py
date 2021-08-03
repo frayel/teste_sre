@@ -23,6 +23,6 @@ class RemotePaymentService:
         }
         response = requests.post(settings.FINANCE_PAYMENT_ENDPOINT, json=data, headers=headers, timeout=10)
         if response.status_code >= 300:
-            logging.error(f"Mensagem do Servidor: {response.content.decode()}")
+            logging.error(f"Ocorreu um erro. Resposta do Servidor: {response.content.decode()}")
         response.raise_for_status()
         return True
