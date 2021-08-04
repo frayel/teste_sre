@@ -97,13 +97,13 @@ Para rodar o ambiente de desenvolvimento localmente:
 ```bash
 $> cd app_consulta/consultation
 $> python manage.py migrate
-$> python manage.py createsuperuser (com login/senha: admin/teste123)
+$> python manage.py loaddata initial_data
 $> python manage.py runserver 8000
 ```
 ```bash
 $> cd app_financas/finance
 $> python manage.py migrate
-$> python manage.py createsuperuser (com login/senha: admin/teste123)
+$> python manage.py loaddata initial_data
 $> python manage.py runserver 8001
 ```
 OBS: As configurações usadas em desenvolvimento ficam no settings.py e quando estão no container são lidas do arquivo settings-prd.py 
