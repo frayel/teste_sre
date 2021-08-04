@@ -1,18 +1,18 @@
-# iClinic Teste SRE Arquiteto
+# Teste SRE Arquiteto
 O teste consiste em 2 microserviços que possibilitam realizar uma consulta entre um médico e um paciente e 
 gerar uma entrada financeira de cobrança da consulta.  
 
 Realizado em Agosto/2021 por Felipe Rayel <felipe.rayel@gmail.com>
 
 ## Solução
-O sistema está distribuido em 3 containers: API Consulta, API Financeira e DB Postgresql.
+O sistema está distribuído em 3 containers: API Consulta, API Financeira e DB Postgresql.
 
-Dentro do container da API de consulta, tambem roda o scheduler que irá consumir a fila de 
+Dentro do container da API de consulta, também roda o scheduler que irá consumir a fila de 
 processamento.
 
 Na fila de processamento estão as pendências de pagamento que devem ser enviadas à api de finanças. 
 Este scheduler está programado para ler a fila a cada 5 segundos e caso a api de finanças não
-esteja disponivel, o sistema continuará tentando realizar o envio.
+esteja disponível, o sistema continuará tentando realizar o envio.
 
 As pendências de pagamento são alimentadas pelo serviço de término de consulta, que gera um registro
 assim que a consulta é encerrada.
@@ -40,15 +40,17 @@ assim que a consulta é encerrada.
 Para autenticar nas apis deve-se usar o modo Basic (username: admin, password: teste123)  
 
 ## Banco de dados
-O banco de dados usado é o postgresql. Foram usadas 3 tabelas:
-- consultation: Registra as consultas pela API de cosultas.
+Estando rodando no docker, o banco de dados usado é o postgresql. 
+Rodando em ambiente de desenvolvimento, usará o banco sqlite3.
+Foram usadas 3 tabelas:
+- consultation: Registra as consultas pela API de consultas.
 - pending_payment: Registra uma pendência de processamento ao término de uma consulta.
-- payment: Registra a entrada no sistema financeiro pela API de finança.
+- payment: Registra a entrada no sistema financeiro pela API de finanças.
 
-Para simplificação, nao foram criados registros para médico e paciente. Portanto o sistema não irá
+Para simplificação, nao foram criados registros para médico e paciente. Portanto, o sistema não irá
 validar se o código existe em cadastro.
 
-Dados para conexão:
+Dados para conexão no postgresql:
 
 ```
 ip: 127.0.0.1:5432
@@ -60,7 +62,7 @@ password: pg123
 ## Serviço de Consulta
 O serviço é responsável por iniciar e encerrar uma consulta e possui 2 endpoints:  
 - app/consultation/start - Realiza o registro do inicio de uma consulta  
-- app/consultation/finish - Realiza o registro de termino de uma consulta e 
+- app/consultation/finish - Realiza o registro de término de uma consulta e 
 faz o envio da entrada no sistema financeiro de modo assíncrono.     
 
 Scheduler:  
@@ -93,10 +95,16 @@ ou executar docker_run.bat
 ## Ambiente de Desenvolvimento 
 Para rodar o ambiente de desenvolvimento localmente:
 ```bash
+$> cd app_consulta/consultation
 $> python manage.py migrate
 $> python manage.py createsuperuser (com login/senha: admin/teste123)
-$> python manage.py runserver 8000 -> Para a api de consultas
-$> python manage.py runserver 8001 -> para a api de financas
+$> python manage.py runserver 8000
+```
+```bash
+$> cd app_financas/finance
+$> python manage.py migrate
+$> python manage.py createsuperuser (com login/senha: admin/teste123)
+$> python manage.py runserver 8001
 ```
 OBS: As configurações usadas em desenvolvimento ficam no settings.py e quando estão no container são lidas do arquivo settings-prd.py 
 

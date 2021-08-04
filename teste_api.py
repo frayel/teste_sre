@@ -5,7 +5,7 @@ import requests
 
 """ 
     Script de teste da API
-    Este script irá criar uma consulta com dados aleatorios e em seguida irá finaliza-la
+    Este script irá criar 3 consultas médicas com dados aleatorios e em seguida irá finaliza-las
     Para rodar este script nao é necessário nenhuma dependencia do projeto e basta executar:
     python teste_api.py 
 """
@@ -17,7 +17,7 @@ endpoint_finish = "http://localhost:8010/app/consultation/finish/"
 
 
 def main():
-    for i in range(1, 50):
+    for i in range(0, 3):
         consulta = criar_consulta()
         encerrar_consulta(consulta)
 

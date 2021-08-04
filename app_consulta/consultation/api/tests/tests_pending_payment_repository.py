@@ -10,6 +10,8 @@ from api.repository.pending_payment_repository import PendingPaymentRepository
 
 class PendingPaymentRepositoryTest(TestCase):
 
+    pending_payment: PendingPaymentModel
+
     @classmethod
     def setUpTestData(cls):
         cls.pending_payment = PendingPaymentModel(

@@ -19,6 +19,8 @@ class ConsultationModel(models.Model):
         db_table = "consultation"
 
     def to_dto(self) -> ConsultationDto:
+        """ Transforma o objeto model em um DTO """
+
         return ConsultationDto(
             id=self.id,
             start_date=self.start_date.replace(microsecond=0) if self.start_date else None,

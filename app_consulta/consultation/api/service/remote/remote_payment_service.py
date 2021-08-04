@@ -5,14 +5,10 @@ import requests
 from django.conf import settings
 
 from api.dto.pending_payment_dto import PendingPaymentDto
-from api.repository.pending_payment_repository import PendingPaymentRepository
 
 
 class RemotePaymentService:
     """ Serviço de comunicação com a api financeira """
-
-    def __init__(self):
-        self.payment_repository = PendingPaymentRepository()
 
     def send(self, payment: PendingPaymentDto) -> bool:
         logging.info(f'Realizando chamda remota para {settings.FINANCE_PAYMENT_ENDPOINT}')

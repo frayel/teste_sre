@@ -78,15 +78,8 @@ WSGI_APPLICATION = 'consultation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'OPTIONS': {
-            'options': '-c search_path=public -c statement_timeout=10s -c idle_in_transaction_session_timeout=10s',
-        },
-        'USER': 'postgres',
-        'PASSWORD': os.environ.get("DB_PASSWORD", default='pg123'),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
 }
 

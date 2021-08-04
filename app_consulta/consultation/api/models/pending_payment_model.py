@@ -19,6 +19,8 @@ class PendingPaymentModel(models.Model):
         db_table = "pending_payment"
 
     def to_dto(self) -> PendingPaymentDto:
+        """ Transforma o objeto model em um DTO """
+
         return PendingPaymentDto(
             id=self.id,
             appointment_id=self.appointment_id,

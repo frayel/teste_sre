@@ -15,7 +15,7 @@ from api.service.price_calculator import PriceCalculator
 
 class FinishConsultationService:
     """ Serviço para encerramento de atendimento de uma consulta
-        Executado em uma transação atomica, portanto em caso de erro, as alteracoes nao serao gravadas
+        Executado em uma transação atômica, portanto em caso de erro, as alterações nao serao gravadas
     """
 
     def __init__(self):

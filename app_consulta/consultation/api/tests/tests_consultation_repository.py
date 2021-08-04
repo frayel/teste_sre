@@ -11,6 +11,8 @@ from api.repository.consultation_repository import ConsultationRepository
 
 class ConsultationRepositoryTest(TestCase):
 
+    consultation: ConsultationModel
+
     @classmethod
     def setUpTestData(cls):
         cls.consultation = ConsultationModel(

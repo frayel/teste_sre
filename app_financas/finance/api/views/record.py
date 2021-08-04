@@ -33,7 +33,7 @@ class RecordView(APIView):
 
         try:
             # Converte a entrada em DTO
-            input_dto = PaymentDto().from_dict(JSONParser().parse(request))
+            input_dto = PaymentDto().from_dict(JSONParser().parse(request)).validate()
             # Chama o serviço para registrar o recebimento
             payment_dto = self.service.record(input_dto)
 

@@ -11,7 +11,7 @@ class ConsultationRepository:
         self.objects = ConsultationModel.objects
 
     def get_by_consultation_id(self, pk: UUID) -> ConsultationDto:
-        """ Obtem uma consulta pelo id """
+        """ Obtém uma consulta pelo id """
         model = self.objects.get(id=pk)
         return model.to_dto() if model else None
 

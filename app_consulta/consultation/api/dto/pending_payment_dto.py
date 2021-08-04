@@ -19,6 +19,8 @@ class PendingPaymentDto:
         self.finished = finished
 
     def from_dict(self, dict_value: dict):
+        """ Carrega os valores do DTO a partir de um dict """
+
         self.id = dict_value["id"] if "id" in dict_value else None
         self.appointment_id = dict_value["appointment_id"] if "appointment_id" in dict_value else None
         self.total_price = dict_value["total_price"] if "total_price" in dict_value else None

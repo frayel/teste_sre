@@ -12,6 +12,7 @@ class PaymentService:
         self.payment_repository = PaymentRepository()
 
     def record(self, payment_dto: PaymentDto) -> PaymentDto:
+        """ Grava o registro do pagamento """
 
         # Verificar se o registro já nao foi feito
         if self.payment_repository.is_recorded(payment_dto.appointment_id):

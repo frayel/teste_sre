@@ -16,6 +16,7 @@ class PaymentModel(models.Model):
         db_table = "payment"
 
     def to_dto(self) -> PaymentDto:
+        """ Transforma o objeto model em um DTO """
         return PaymentDto(
             id=self.id,
             appointment_id=self.appointment_id,

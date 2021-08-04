@@ -10,6 +10,8 @@ from api.service.process_payment_service import ProcessPaymentService
 
 class RemotePaymentServiceTest(TestCase):
 
+    pending_payment: PendingPaymentModel
+
     @classmethod
     def setUpTestData(cls):
         cls.pending_payment = PendingPaymentModel(

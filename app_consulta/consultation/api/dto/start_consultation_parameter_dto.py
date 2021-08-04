@@ -13,15 +13,20 @@ class StartConsultationParameterDto:
         self.patient_id = patient_id
 
     def from_dict(self, dict_value: dict):
+        """ Carrega os valores do DTO a partir de um dict """
+
         self.physician_id = dict_value["physician_id"] if "physician_id" in dict_value else None
         self.patient_id = dict_value["patient_id"] if "patient_id" in dict_value else None
 
         return self
 
     def validate(self):
+        """ Valida se os dados do DTO são válidos """
+
         if not self.physician_id:
             raise InvalidDataException("Por favor informar o médico")
 
         if not self.patient_id:
             raise InvalidDataException("Por favor informar o paciente")
+
         return self

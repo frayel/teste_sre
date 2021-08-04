@@ -13,6 +13,9 @@ from api.models.consultation_model import ConsultationModel
 
 class ApiFinishConsultationTest(TestCase):
 
+    user: str
+    password: str
+
     @classmethod
     def setUpTestData(cls):
         cls.user = settings.API_USERNAME
