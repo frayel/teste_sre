@@ -30,9 +30,9 @@ assim que a consulta é encerrada.
 │    │    └── remote   Serviço de integração a APIs externas (ex: financeiro) 
 │    ├─── tests        Testes automatizados
 │    └─── views        Camada de exposição dos serviços (endpoints)
-├─── consultation         
-├─── settings.py      Arquivo de configuração global
-└─── settings-prd.py  Arquivo de configuração quando estiver dodando em container
+└─── consultation         
+     ├─── settings.py      Arquivo de configuração global
+     └─── settings-prd.py  Arquivo de configuração quando estiver dodando em container
 ```    
 
  
