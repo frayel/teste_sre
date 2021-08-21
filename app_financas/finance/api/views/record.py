@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from api.dto.payment_dto import PaymentDto
 from api.exceptions.invalid_data import InvalidDataException
 from api.exceptions.invalid_operation import InvalidOperationException
+from api.exceptions.operation_already_registered import OperationAlreadyRegisteredException
 from api.service.payment_service import PaymentService
 
 
@@ -40,6 +41,9 @@ class RecordView(APIView):
         except (InvalidDataException, ValidationError, InvalidOperationException) as e:
             # Responde com o status 400 no caso de existir dados inválidos no parametro
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+        except OperationAlreadyRegisteredException as e:
+            return Response(str(e), status=status.HTTP_208_ALREADY_REPORTED)
 
         except Exception as e:
             # Responde com status 400 e registra em log no caso de ocorrer um erro não especificado

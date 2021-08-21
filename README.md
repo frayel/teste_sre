@@ -1,14 +1,9 @@
-# Teste Arquitetura Microserviços
+# Teste de Arquitetura baseada em eventos com Microserviços
+
 O teste consiste em 2 microserviços que possibilitam realizar uma consulta entre um médico e um paciente e 
 gerar uma entrada financeira de cobrança da consulta.  
 
-Realizado em Agosto/2021 por Felipe Rayel <felipe.rayel@gmail.com>
-
-## Solução
-O sistema está distribuído em 3 containers: API Consulta, API Financeira e DB Postgresql.
-
-Dentro do container da API de consulta, também roda o scheduler que irá consumir a fila de 
-processamento.
+O sistema está baseado em 4 containers: API Consulta, API Financeira, Queue Consumer e DB Postgresql.
 
 Na fila de processamento estão as pendências de pagamento que devem ser enviadas à api de finanças. 
 Este scheduler está programado para ler a fila a cada 5 segundos e caso a api de finanças não
@@ -17,6 +12,12 @@ esteja disponível, o sistema continuará tentando realizar o envio.
 As pendências de pagamento são alimentadas pelo serviço de término de consulta, que gera um registro
 assim que a consulta é encerrada.
 
+## Tecnologias
+    Python
+    Django
+    Kafka
+    Docker
+    Postgresql
 
 ## Estrutura
 ```
@@ -26,8 +27,7 @@ assim que a consulta é encerrada.
 │    ├─── exceptions   Classe de exceções customizadas
 │    ├─── models       Entidades de dados relacionais (database models)
 │    ├─── repository   Camada de persistência
-│    ├─── service      Camada de serviço 
-│    │    └── remote   Serviço de integração a APIs externas (ex: financeiro) 
+│    ├─── service      Camada de serviço  
 │    ├─── tests        Testes automatizados
 │    └─── views        Camada de exposição dos serviços (endpoints)
 └─── consultation         
@@ -42,9 +42,8 @@ Para autenticar nas apis deve-se usar o modo Basic (username: admin, password: t
 ## Banco de dados
 Estando rodando no docker, o banco de dados usado é o postgresql. 
 Rodando em ambiente de desenvolvimento, usará o banco sqlite3.
-Foram usadas 3 tabelas:
+Foram usadas 2 tabelas:
 - consultation: Registra as consultas pela API de consultas.
-- pending_payment: Registra uma pendência de processamento ao término de uma consulta.
 - payment: Registra a entrada no sistema financeiro pela API de finanças.
 
 Para simplificação, nao foram criados registros para médico e paciente. Portanto, o sistema não irá
@@ -65,34 +64,24 @@ O serviço é responsável por iniciar e encerrar uma consulta e possui 2 endpoi
 - app/consultation/finish - Realiza o registro de término de uma consulta e 
 faz o envio da entrada no sistema financeiro de modo assíncrono.     
 
-Scheduler:  
-* Verifica a cada 5 segundos se existem pendências de entrada financeira a serem processadas.  
+## Queue Consumer
+* Verifica se existem pendências de entrada financeira a serem processadas.  
 Se existir, realiza a chamada da API financeira para registro.  
-Em caso de erro ou indisponibilidade, o sistema continuará tentando até conseguir, registrando o número de tentativas.  
+Em caso de erro ou indisponibilidade, o sistema continuará tentando até conseguir.
+* Interface web para o kafka: http://localhost:19000/
 	
 ## Serviço de Finanças	
 O serviço é responsável por registrar a entrada financeira de uma consulta. Possui 1 endpoint:  
 * app/finance/record - Realiza o registro de uma entrada financeira  
 
-## Containers Docker
+## Setup
 
 ### Para criar os containers:
 ```bash
-$> docker build -t app_consulta app_consulta
-$> docker build -t app_financas app_financas
-```
-ou executar docker_build.bat  
+$> docker-compose up --build
+``` 
 
-### Para criar a rede e executar os containers:
-```bash
-$> docker network create --subnet=172.18.0.0/16 rede_teste  
-$> docker run --net rede_teste --ip 172.18.0.2 --name postgres -e "POSTGRES_PASSWORD=pg123" -p 5432:5432 -d postgres  
-$> docker run --net rede_teste --ip 172.18.0.3 -it -p 8010:8010 --name app_consulta -d app_consulta  
-$> docker run --net rede_teste --ip 172.18.0.4 -it -p 8020:8020 --name app_financas -d app_financas 
-```
-ou executar docker_run.bat  
-
-## Ambiente de Desenvolvimento 
+### Ambiente de Desenvolvimento 
 Para rodar o ambiente de desenvolvimento localmente:
 ```bash
 $> cd app_consulta/consultation
@@ -107,6 +96,7 @@ $> python manage.py loaddata initial_data
 $> python manage.py runserver 8001
 ```
 OBS: As configurações usadas em desenvolvimento ficam no settings.py e quando estão no container são lidas do arquivo settings-prd.py 
+
 
 ## Realizando chamadas
 

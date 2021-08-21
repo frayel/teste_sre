@@ -1,9 +1,9 @@
 FROM python:3.9
 
 RUN mkdir -p /opt/app
-RUN mkdir -p /opt/app/finance
+RUN mkdir -p /opt/app/app
 COPY requirements.txt start.sh /opt/app/
-COPY finance /opt/app/finance/
+COPY app /opt/app/app/
 WORKDIR /opt/app
 RUN pip install -r requirements.txt
 RUN pip install gunicorn

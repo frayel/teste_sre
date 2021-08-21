@@ -23,10 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!7=@q4n6d9hn3e!keni6fmr+st8j9*yn)xq#ms-1kgix81hob2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+DEBUG = os.environ.get('DEBUG', 'true').lower() == 'true'
 
 # Application definition
 
@@ -37,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_apscheduler',
     'rest_framework',
     'api.apps.ApiConfig',
 ]
@@ -77,12 +73,23 @@ WSGI_APPLICATION = 'consultation.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default': {},
+    'local': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
+    'remote': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'OPTIONS': {
+            'options': '-c search_path=public -c statement_timeout=10s -c idle_in_transaction_session_timeout=10s',
+        },
+        'USER': os.environ.get("DB_USER", default='postgres'),
+        'PASSWORD': os.environ.get("DB_PASSWORD", default='pg123'),
+        'HOST': os.environ.get("DB_HOST", default='localhost'),
+        'PORT': '5432',
+    },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -164,19 +171,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
-SCHEDULER_CONFIG = {
-    "apscheduler.jobstores.default": {
-       "class": "django_apscheduler.jobstores:MemoryJobStore"
-    },
-    'apscheduler.executors.processpool': {
-        "type": "threadpool"
-    },
-    'apscheduler.timezone': TIME_ZONE,
-    'apscheduler.job_defaults.max_instances': '1',
-    'apscheduler.job_defaults.coalesce': 'true',
-}
 
-API_USERNAME = "admin"
-API_PASSWORD = "teste123"
-FINANCE_PAYMENT_ENDPOINT = "http://127.0.0.1:8001/app/finance/record/"
-SCHEDULER_INTERVAL_SECONDS = 5
+API_USERNAME = os.environ.get('API_USERNAME', "admin")
+API_PASSWORD = os.environ.get('API_PASSWORD', "teste123")
+KAFKA_URI = os.environ.get('KAFKA_URI', "localhost:9092")
+KAFKA_TOPIC = os.environ.get('KAFKA_TOPIC', "pending_payment")
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS', "localhost")]
+DATABASES['default'] = DATABASES[os.environ.get('DB_DEFAULT', "local")]

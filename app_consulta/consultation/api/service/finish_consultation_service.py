@@ -1,15 +1,17 @@
+import json
 import logging
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.utils import timezone
+from kafka import KafkaProducer
 
 from api.dto.consultation_dto import ConsultationDto
 from api.dto.finish_consultation_parameter_dto import FinishConsultationParameterDto
 from api.dto.pending_payment_dto import PendingPaymentDto
 from api.exceptions.invalid_operation import InvalidOperationException
 from api.repository.consultation_repository import ConsultationRepository
-from api.repository.pending_payment_repository import PendingPaymentRepository
 from api.service.price_calculator import PriceCalculator
 
 
@@ -20,7 +22,6 @@ class FinishConsultationService:
 
     def __init__(self):
         self.consultation_repository = ConsultationRepository()
-        self.payment_repository = PendingPaymentRepository()
         self.price_calculator = PriceCalculator()
 
     @transaction.atomic
@@ -41,9 +42,12 @@ class FinishConsultationService:
 
                     # Registra a cobrança para ser enviada à API financeira
                     pending_payment = PendingPaymentDto(appointment_id=finish_dto.consultation_id,
-                                                        total_price=consultation_dto.price,
-                                                        tries=0, processing=False, finished=False)
-                    self.payment_repository.save(pending_payment)
+                                                        total_price=consultation_dto.price)
+                    producer = KafkaProducer(bootstrap_servers=settings.KAFKA_URI,
+                                             value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+                    producer.send(settings.KAFKA_TOPIC, pending_payment.__dict__)
+                    producer.flush()
+                    producer.close()
 
                     # Grava a Consulta como Encerrada
                     consultation_dto = self.consultation_repository.save_finish(consultation_dto)
